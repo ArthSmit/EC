@@ -7,33 +7,42 @@ import { Button } from "@/components/ui/button";
 import { Copy, Shield, Heart, Wind, Zap, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Enemy } from "@/lib/types";
+import { useAppTranslations } from "@/lib/i18n";
 
 interface StatBlockProps {
   enemy: Enemy;
 }
 
 export default function StatBlock({ enemy }: StatBlockProps) {
+  const { t } = useAppTranslations();
   const { toast } = useToast();
 
   const handleCopyToClipboard = () => {
     const statBlockText = `
-Name: ${enemy.name}
-Armor Class: ${enemy.armorClass}
-Hit Points: ${enemy.hitPoints}
-Speed: ${enemy.speed} ft.
+${t('statBlock.clipboard.name', { name: enemy.name })}
+${t('statBlock.clipboard.armorClass', { armorClass: enemy.armorClass })}
+${t('statBlock.clipboard.hitPoints', { hitPoints: enemy.hitPoints })}
+${t('statBlock.clipboard.speed', { speed: enemy.speed })}
 
-Abilities:
+${t('statBlock.clipboard.abilitiesHeader')}
 ${enemy.abilities.map(ability => `- ${ability}`).join('\n')}
 
-Special Actions:
+${t('statBlock.clipboard.specialActionsHeader')}
 ${enemy.specialActions.map(action => `- ${action}`).join('\n')}
     `;
     navigator.clipboard.writeText(statBlockText.trim())
       .then(() => {
-        toast({ title: "Copied!", description: `${enemy.name} stat block copied to clipboard.` });
+        toast({ 
+          title: t('statBlock.toast.copied.title'), 
+          description: t('statBlock.toast.copied.description', { enemyName: enemy.name })
+        });
       })
       .catch(err => {
-        toast({ variant: "destructive", title: "Error", description: "Failed to copy to clipboard." });
+        toast({ 
+          variant: "destructive", 
+          title: t('statBlock.toast.copyError.title'), 
+          description: t('statBlock.toast.copyError.description')
+        });
         console.error('Failed to copy: ', err);
       });
   };
@@ -48,17 +57,17 @@ ${enemy.specialActions.map(action => `- ${action}`).join('\n')}
           <div className="flex flex-col items-center p-2 rounded-md bg-background/50">
             <Shield className="h-5 w-5 mb-1 text-primary" />
             <p className="font-semibold text-lg text-primary-foreground">{enemy.armorClass}</p>
-            <p className="text-xs text-muted-foreground">Armor Class</p>
+            <p className="text-xs text-muted-foreground">{t('statBlock.armorClass')}</p>
           </div>
           <div className="flex flex-col items-center p-2 rounded-md bg-background/50">
             <Heart className="h-5 w-5 mb-1 text-primary" />
             <p className="font-semibold text-lg text-primary-foreground">{enemy.hitPoints}</p>
-            <p className="text-xs text-muted-foreground">Hit Points</p>
+            <p className="text-xs text-muted-foreground">{t('statBlock.hitPoints')}</p>
           </div>
           <div className="flex flex-col items-center p-2 rounded-md bg-background/50">
             <Wind className="h-5 w-5 mb-1 text-primary" />
             <p className="font-semibold text-lg text-primary-foreground">{enemy.speed} ft.</p>
-            <p className="text-xs text-muted-foreground">Speed</p>
+            <p className="text-xs text-muted-foreground">{t('statBlock.speed')}</p>
           </div>
         </div>
 
@@ -68,7 +77,7 @@ ${enemy.specialActions.map(action => `- ${action}`).join('\n')}
             <div>
               <h4 className="font-semibold text-accent flex items-center gap-2 mb-1 text-lg">
                 <Star className="h-5 w-5" />
-                Abilities
+                {t('statBlock.abilities')}
               </h4>
               <ul className="list-disc list-inside pl-2 space-y-0.5 text-sm text-card-foreground/90">
                 {enemy.abilities.map((ability, index) => (
@@ -85,7 +94,7 @@ ${enemy.specialActions.map(action => `- ${action}`).join('\n')}
             <div>
               <h4 className="font-semibold text-accent flex items-center gap-2 mb-1 text-lg">
                 <Zap className="h-5 w-5" />
-                Special Actions
+                {t('statBlock.specialActions')}
               </h4>
               <ul className="list-disc list-inside pl-2 space-y-0.5 text-sm text-card-foreground/90">
                 {enemy.specialActions.map((action, index) => (
@@ -102,7 +111,7 @@ ${enemy.specialActions.map(action => `- ${action}`).join('\n')}
           variant="outline" 
           className="w-full text-accent border-accent hover:bg-accent hover:text-accent-foreground transition-colors duration-150"
         >
-          <Copy className="mr-2 h-4 w-4" /> Copy Stats
+          <Copy className="mr-2 h-4 w-4" /> {t('statBlock.buttons.copyStats')}
         </Button>
       </CardContent>
     </Card>

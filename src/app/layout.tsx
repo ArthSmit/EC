@@ -4,6 +4,7 @@ import { Merriweather } from 'next/font/google';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from '@/lib/utils';
+import { LanguageProvider } from '@/lib/i18n';
 
 const merriweather = Merriweather({
   weight: ['300', '400', '700', '900'],
@@ -24,8 +25,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn(merriweather.variable, "scroll-smooth")}>
       <body className={cn("font-serif antialiased min-h-screen flex flex-col")}>
-        {children}
-        <Toaster />
+        <LanguageProvider>
+          {children}
+          <Toaster />
+        </LanguageProvider>
       </body>
     </html>
   );
