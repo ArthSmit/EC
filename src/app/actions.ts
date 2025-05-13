@@ -22,29 +22,50 @@ export async function handleGenerateEncounter(
   const { enemyType, numberOfCreatures, difficulty, language } = validatedInput;
 
   const enemies: Enemy[] = [];
-
-  const baseStats = await generateEnemyStats({ enemyType, numberOfCreatures, difficulty });
-  const baseAbilitiesAndName: AssignAbilitiesAndActionsOutput = await assignAbilitiesAndActions({ 
-    enemyType, 
-    difficulty, 
-    targetLanguage: language 
-  });
-
-  const enemyBaseName = baseAbilitiesAndName.localizedName;
+  let encounterBaseNameForDisplay = enemyType; // Fallback, will be updated
 
   for (let i = 0; i < numberOfCreatures; i++) {
+    // Generate unique stats for each enemy
+    // Pass the original numberOfCreatures for context to the AI, but it generates for one.
+    const individualStats = await generateEnemyStats({
+      enemyType,
+      numberOfCreatures: numberOfCreatures, // Context for AI if it needs to vary based on total
+      difficulty
+    });
+
+    // Generate unique abilities, actions, and localized name for each enemy
+    const individualAbilitiesAndName = await assignAbilitiesAndActions({
+      enemyType,
+      difficulty,
+      targetLanguage: language,
+    });
+
+    // Use the localized name from the first generated enemy as the base for the encounter title
+    if (i === 0) {
+      encounterBaseNameForDisplay = individualAbilitiesAndName.localizedName;
+    }
+    
+    const currentEnemyLocalizedName = individualAbilitiesAndName.localizedName;
+    const enemyDisplayName = numberOfCreatures > 1 
+        ? `${currentEnemyLocalizedName} ${i + 1}` 
+        : currentEnemyLocalizedName;
+
     enemies.push({
-      id: `${enemyBaseName}-${difficulty}-${Date.now()}-${i}`, 
-      name: numberOfCreatures > 1 ? `${enemyBaseName} ${i + 1}` : enemyBaseName,
-      armorClass: baseStats.armorClass,
-      hitPoints: baseStats.hitPoints, 
-      speed: baseStats.speed,
-      abilities: baseAbilitiesAndName.abilities,
-      specialActions: baseAbilitiesAndName.specialActions,
+      id: `${currentEnemyLocalizedName}-${difficulty}-${Date.now()}-${Math.random().toString(36).substring(7)}-${i}`, // Enhanced unique ID
+      name: enemyDisplayName,
+      armorClass: individualStats.armorClass,
+      hitPoints: individualStats.hitPoints,
+      speed: individualStats.speed,
+      abilities: individualAbilitiesAndName.abilities,
+      specialActions: individualAbilitiesAndName.specialActions,
     });
   }
+  
+  const finalEncounterDisplayName = numberOfCreatures > 1 
+    ? `${encounterBaseNameForDisplay} x${numberOfCreatures}` 
+    : encounterBaseNameForDisplay;
 
-  return { enemies, encounterBaseName: enemyBaseName };
+  return { enemies, encounterBaseName: finalEncounterDisplayName };
 }
 
 const randomEnemySchema = z.object({
@@ -75,7 +96,7 @@ export async function handleRandomEnemy(input: z.infer<typeof randomEnemySchema>
   const abilitiesAndName = await assignAbilitiesAndActions(abilitiesInput);
 
   const enemy: Enemy = {
-    id: `${abilitiesAndName.localizedName}-${randomDifficulty}-${Date.now()}-0`,
+    id: `${abilitiesAndName.localizedName}-${randomDifficulty}-${Date.now()}-rand-${Math.random().toString(36).substring(7)}`, // Enhanced unique ID
     name: abilitiesAndName.localizedName,
     armorClass: stats.armorClass,
     hitPoints: stats.hitPoints,
@@ -86,3 +107,4 @@ export async function handleRandomEnemy(input: z.infer<typeof randomEnemySchema>
 
   return { enemies: [enemy], localizedBaseName: abilitiesAndName.localizedName };
 }
+

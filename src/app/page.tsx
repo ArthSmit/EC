@@ -21,12 +21,16 @@ export default function HomePage() {
     setIsMounted(true);
   }, []);
 
-  const handleGeneratedEnemies = (generatedEnemies: Enemy[], name: string, isRandom: boolean = false) => {
+  // `nameFromAI` is the `encounterBaseName` returned by the action, 
+  // which is already formatted (e.g., "Гоблины x5" or "Гоблин")
+  const handleGeneratedEnemies = (generatedEnemies: Enemy[], nameFromAI: string, isRandom: boolean = false) => {
     setEnemies(generatedEnemies);
-    if (isRandom && generatedEnemies.length === 1 && name) {
-      setEncounterName(t('randomEncounter.title', { enemyName: name }));
+    if (isRandom && generatedEnemies.length === 1 && nameFromAI) {
+      // For random encounters, nameFromAI is just the localized base name. We construct the title.
+      setEncounterName(t('randomEncounter.title', { enemyName: nameFromAI }));
     } else {
-      setEncounterName(name);
+      // For forged encounters, nameFromAI is already the full display name (e.g. "Goblins x5" or "Goblin")
+      setEncounterName(nameFromAI);
     }
   };
   
@@ -63,3 +67,4 @@ export default function HomePage() {
     </div>
   );
 }
+

@@ -33,11 +33,11 @@
   "enemyInputForm.buttons.forgeEncounter": "Forge Encounter!",
   "enemyInputForm.buttons.summonRandom": "Summon Random Foe",
   "enemyInputForm.toast.forgeSuccess.title": "Encounter Forged!",
-  "enemyInputForm.toast.forgeSuccess.description": "{enemyType}(s) are ready for battle.",
+  "enemyInputForm.toast.forgeSuccess.description": "{encounterDisplayName} are ready for battle.",
   "enemyInputForm.toast.forgeError.title": "Forge Failed!",
   "enemyInputForm.toast.forgeError.description": "Could not generate encounter. Please try again.",
   "enemyInputForm.toast.randomSuccess.title": "Random Foe Summoned!",
-  "enemyInputForm.toast.randomSuccess.description": "{encounterName} awaits.",
+  "enemyInputForm.toast.randomSuccess.description": "{enemyName} awaits.",
   "enemyInputForm.toast.randomError.title": "Summoning Failed!",
   "enemyInputForm.toast.randomError.description": "Could not generate random enemy. Please try again.",
 
@@ -63,3 +63,4 @@
 
   "randomEncounter.title": "A Wild {enemyName} Appears!"
 }
+

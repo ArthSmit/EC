@@ -13,12 +13,12 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateEnemyStatsInputSchema = z.object({
-  enemyType: z.string().describe('The type of enemy (e.g., Goblin, Orc, Dragon).'),
+  enemyType: z.string().describe('The type of enemy (e.g., Goblin, Orc, Dragon). This can be in any language provided by the user.'),
   numberOfCreatures: z
     .number()
     .min(1)
     .max(20)
-    .describe('The number of creatures in the encounter (1-20).'),
+    .describe('The number of creatures in the encounter (1-20). This is informational for context; the flow generates stats for one creature at a time.'),
   difficulty: z
     .enum(['easy', 'medium', 'hard', 'random'])
     .describe('The difficulty level of the encounter.'),
@@ -42,19 +42,22 @@ const prompt = ai.definePrompt({
   output: {schema: GenerateEnemyStatsOutputSchema},
   prompt: `You are a D&D game master assisting in encounter creation.
 
-  Based on the enemy type, number of creatures, and difficulty, generate appropriate stats for the enemy.
+  Based on the enemy type and difficulty, generate appropriate core stats (Armor Class, Hit Points, Speed) for a single enemy.
+  The 'numberOfCreatures' parameter is for context if you are being called multiple times for the same encounter, use it to introduce slight variations.
 
   Enemy Type: {{{enemyType}}}
-  Number of Creatures: {{{numberOfCreatures}}}
   Difficulty: {{{difficulty}}}
+  (Context: part of an encounter with {{{numberOfCreatures}}} creatures)
 
-  Consider the difficulty when assigning stats.
+  Consider the difficulty when assigning stats:
   - Easy: Lower stats.
   - Medium: Moderate stats.
   - Hard: Higher stats.
-  - Random: Stats should be determined randomly within reasonable bounds.
+  - Random: Stats should be determined randomly within reasonable bounds for the enemy type.
 
-  Ensure the output is a valid JSON object.
+  IMPORTANT: If you are asked to generate stats for multiple creatures of the same type sequentially (implied if this prompt is called multiple times with the same enemyType and difficulty for an encounter with numberOfCreatures > 1), ensure there is slight variation in Armor Class, Hit Points, and Speed for each creature instance to make them feel distinct, while remaining appropriate for the specified difficulty and enemy type.
+
+  Ensure the output is a valid JSON object strictly adhering to the output schema.
   `,
 });
 
@@ -69,3 +72,4 @@ const generateEnemyStatsFlow = ai.defineFlow(
     return output!;
   }
 );
+

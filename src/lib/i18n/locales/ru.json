@@ -33,11 +33,11 @@
   "enemyInputForm.buttons.forgeEncounter": "Создать Столкновение!",
   "enemyInputForm.buttons.summonRandom": "Призвать Случайного Врага",
   "enemyInputForm.toast.forgeSuccess.title": "Столкновение Создано!",
-  "enemyInputForm.toast.forgeSuccess.description": "{enemyType} готовы к битве.",
+  "enemyInputForm.toast.forgeSuccess.description": "{encounterDisplayName} готовы к битве.",
   "enemyInputForm.toast.forgeError.title": "Ошибка Создания!",
   "enemyInputForm.toast.forgeError.description": "Не удалось создать столкновение. Пожалуйста, попробуйте еще раз.",
   "enemyInputForm.toast.randomSuccess.title": "Случайный Враг Призван!",
-  "enemyInputForm.toast.randomSuccess.description": "{encounterName} ожидает.",
+  "enemyInputForm.toast.randomSuccess.description": "{enemyName} ожидает.",
   "enemyInputForm.toast.randomError.title": "Ошибка Призыва!",
   "enemyInputForm.toast.randomError.description": "Не удалось создать случайного врага. Пожалуйста, попробуйте еще раз.",
 
@@ -63,3 +63,4 @@
 
   "randomEncounter.title": "Внезапно появляется Дикий {enemyName}!"
 }
+

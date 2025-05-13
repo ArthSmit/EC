@@ -97,11 +97,12 @@ export default function EnemyInputForm({ onEnemiesGenerated, onLoadingStateChang
     try {
       const { handleGenerateEncounter } = await import("@/app/actions");
       const result = await handleGenerateEncounter({ ...values, language });
-      const encounterDisplayName = values.numberOfCreatures > 1 ? `${result.encounterBaseName} x${values.numberOfCreatures}` : result.encounterBaseName;
-      onEnemiesGenerated(result.enemies, encounterDisplayName, false);
+      // result.encounterBaseName is already the formatted display name (e.g., "Гоблины x5" or "Гоблин")
+      onEnemiesGenerated(result.enemies, result.encounterBaseName, false);
       toast({ 
         title: t('enemyInputForm.toast.forgeSuccess.title'), 
-        description: t('enemyInputForm.toast.forgeSuccess.description', { enemyType: result.encounterBaseName }) 
+        // Use result.encounterBaseName which is the localized and potentially numbered name
+        description: t('enemyInputForm.toast.forgeSuccess.description', { encounterDisplayName: result.encounterBaseName }) 
       });
     } catch (error) {
       console.error("Failed to generate encounter:", error);
@@ -123,10 +124,12 @@ export default function EnemyInputForm({ onEnemiesGenerated, onLoadingStateChang
     try {
       const { handleRandomEnemy } = await import("@/app/actions");
       const result = await handleRandomEnemy({ language });
+      // result.localizedBaseName is the single enemy's localized name
       onEnemiesGenerated(result.enemies, result.localizedBaseName, true);
       toast({ 
         title: t('enemyInputForm.toast.randomSuccess.title'), 
-        description: t('enemyInputForm.toast.randomSuccess.description', { encounterName: result.localizedBaseName })
+        // Use localizedBaseName for the single random enemy name
+        description: t('enemyInputForm.toast.randomSuccess.description', { enemyName: result.localizedBaseName })
       });
     } catch (error) {
         console.error("Failed to generate random enemy:", error);
@@ -292,3 +295,4 @@ export default function EnemyInputForm({ onEnemiesGenerated, onLoadingStateChang
     </TooltipProvider>
   );
 }
+
