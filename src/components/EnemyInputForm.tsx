@@ -48,11 +48,18 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-const PREDEFINED_ENEMY_TYPES_FOR_FORM = [
+const PREDEFINED_ENEMY_TYPES_FOR_FORM_EN = [
   "Goblin", "Orc", "Skeleton", "Zombie", "Kobold", 
   "Bandit", "Cultist", "Guard", "Acolyte",
   "Wolf", "Giant Spider", "Ogre", 
   "Dragon (Young Red)", "Knight", "Veteran"
+].sort();
+
+const PREDEFINED_ENEMY_TYPES_FOR_FORM_RU = [
+  "Гоблин", "Орк", "Скелет", "Зомби", "Кобольд",
+  "Бандит", "Культист", "Стражник", "Аколит",
+  "Волк", "Гигантский Паук", "Огр",
+  "Дракон (Молодой Красный)", "Рыцарь", "Ветеран"
 ].sort();
 
 
@@ -90,6 +97,10 @@ export default function EnemyInputForm({ onEnemiesGenerated, onLoadingStateChang
       difficulty: "medium",
     },
   });
+  
+  const predefinedEnemyTypes = React.useMemo(() => {
+    return language === 'ru' ? PREDEFINED_ENEMY_TYPES_FOR_FORM_RU : PREDEFINED_ENEMY_TYPES_FOR_FORM_EN;
+  }, [language]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
@@ -170,7 +181,7 @@ export default function EnemyInputForm({ onEnemiesGenerated, onLoadingStateChang
                           )}
                         >
                           {field.value
-                            ? PREDEFINED_ENEMY_TYPES_FOR_FORM.find(
+                            ? predefinedEnemyTypes.find(
                                 (enemy) => enemy.toLowerCase() === field.value.toLowerCase()
                               ) || field.value
                             : t('enemyInputForm.enemyType.comboboxPlaceholder')}
@@ -189,7 +200,7 @@ export default function EnemyInputForm({ onEnemiesGenerated, onLoadingStateChang
                         />
                         <CommandEmpty>{t('enemyInputForm.enemyType.comboboxEmpty')}</CommandEmpty>
                         <CommandList>
-                          {PREDEFINED_ENEMY_TYPES_FOR_FORM.map((enemy) => (
+                          {predefinedEnemyTypes.map((enemy) => (
                             <CommandItem
                               value={enemy}
                               key={enemy}

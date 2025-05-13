@@ -28,14 +28,15 @@ export async function handleGenerateEncounter(
     // Generate unique stats for each enemy
     // Pass the original numberOfCreatures for context to the AI, but it generates for one.
     const individualStats = await generateEnemyStats({
-      enemyType,
+      enemyType, // Use the user-provided (potentially localized) enemy type for stat generation context
       numberOfCreatures: numberOfCreatures, // Context for AI if it needs to vary based on total
       difficulty
     });
 
     // Generate unique abilities, actions, and localized name for each enemy
+    // The AI should handle localization based on targetLanguage
     const individualAbilitiesAndName = await assignAbilitiesAndActions({
-      enemyType,
+      enemyType, // Use the user-provided (potentially localized) enemy type here too
       difficulty,
       targetLanguage: language,
     });
@@ -72,32 +73,37 @@ const randomEnemySchema = z.object({
   language: z.string().min(2).max(5) as z.ZodType<Language>,
 });
 
-const PREDEFINED_ENEMY_TYPES_FOR_RANDOM = ["Goblin Scout", "Orc Warrior", "Undead Skeleton", "Giant Spider", "Cult Fanatic", "Dire Wolf", "Bandit Captain"];
+// Keep these in English for the AI, translation will happen via assignAbilitiesAndActions flow
+const PREDEFINED_ENEMY_TYPES_FOR_RANDOM_EN = [
+  "Goblin Scout", "Orc Warrior", "Undead Skeleton", "Giant Spider", 
+  "Cult Fanatic", "Dire Wolf", "Bandit Captain", "Kobold Inventor", 
+  "Ogre Brute", "Young Red Dragon" 
+];
 const PREDEFINED_DIFFICULTIES: Array<"easy" | "medium" | "hard"> = ["easy", "medium", "hard"];
 
 export async function handleRandomEnemy(input: z.infer<typeof randomEnemySchema>): Promise<{ enemies: Enemy[], localizedBaseName: string }> {
   const { language } = randomEnemySchema.parse(input);
 
-  const randomEnemyTypeKey = PREDEFINED_ENEMY_TYPES_FOR_RANDOM[Math.floor(Math.random() * PREDEFINED_ENEMY_TYPES_FOR_RANDOM.length)];
+  const randomEnemyTypeKey = PREDEFINED_ENEMY_TYPES_FOR_RANDOM_EN[Math.floor(Math.random() * PREDEFINED_ENEMY_TYPES_FOR_RANDOM_EN.length)];
   const randomDifficulty = PREDEFINED_DIFFICULTIES[Math.floor(Math.random() * PREDEFINED_DIFFICULTIES.length)];
   
   const statsInput: GenerateEnemyStatsInput = { 
-    enemyType: randomEnemyTypeKey, 
+    enemyType: randomEnemyTypeKey, // Use English key for AI
     numberOfCreatures: 1, 
     difficulty: randomDifficulty 
   };
   const abilitiesInput: AssignAbilitiesAndActionsInput = { 
-    enemyType: randomEnemyTypeKey, 
+    enemyType: randomEnemyTypeKey, // Use English key for AI
     difficulty: randomDifficulty,
-    targetLanguage: language,
+    targetLanguage: language, // AI will localize based on this
   };
 
   const stats = await generateEnemyStats(statsInput);
-  const abilitiesAndName = await assignAbilitiesAndActions(abilitiesInput);
+  const abilitiesAndName = await assignAbilitiesAndActions(abilitiesInput); // This will return localizedName
 
   const enemy: Enemy = {
-    id: `${abilitiesAndName.localizedName}-${randomDifficulty}-${Date.now()}-rand-${Math.random().toString(36).substring(7)}`, // Enhanced unique ID
-    name: abilitiesAndName.localizedName,
+    id: `${abilitiesAndName.localizedName}-${randomDifficulty}-${Date.now()}-rand-${Math.random().toString(36).substring(7)}`,
+    name: abilitiesAndName.localizedName, // Use the localized name returned by the AI
     armorClass: stats.armorClass,
     hitPoints: stats.hitPoints,
     speed: stats.speed,
