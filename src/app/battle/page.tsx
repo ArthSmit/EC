@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import BattleEnemyCard from "@/components/BattleEnemyCard";
 import type { Enemy, BattleEnemy } from "@/lib/types";
 import { useAppTranslations } from "@/lib/i18n";
-import { Loader2 } from 'lucide-react';
+import { Loader2, Home } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
@@ -60,6 +60,13 @@ export default function BattlePage() {
     );
   }, []);
 
+  const handleFinishBattle = () => {
+    // Optionally clear localStorage if battle state shouldn't persist after finishing
+    // localStorage.removeItem('battleEnemies');
+    // localStorage.removeItem('battleEncounterName');
+    router.push('/');
+  };
+
   if (!isMounted || isLoading) {
     return (
       <div className="flex flex-col min-h-screen bg-background text-foreground items-center justify-center">
@@ -97,7 +104,18 @@ export default function BattlePage() {
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
-        <h1 className="text-4xl font-bold text-center mb-10 text-accent">{encounterTitle || t('battlePage.title')}</h1>
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-4">
+            <h1 className="text-4xl font-bold text-center text-accent">{encounterTitle || t('battlePage.title')}</h1>
+            <Button 
+                onClick={handleFinishBattle} 
+                variant="outline"
+                className="border-primary text-primary hover:bg-primary/10"
+                size="lg"
+            >
+                <Home className="mr-2 h-5 w-5" />
+                {t('battlePage.buttons.finishBattle')}
+            </Button>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
           {battleEnemies.map(enemy => (
             <BattleEnemyCard 

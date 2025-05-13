@@ -69,6 +69,7 @@
   "battlePage.noEnemies.title": "No Combatants Here",
   "battlePage.noEnemies.message": "The arena is empty. Return to the forge to prepare an encounter.",
   "battlePage.buttons.returnToForge": "Back to the Forge",
+  "battlePage.buttons.finishBattle": "Finish Battle",
 
   "battleEnemyCard.applyDamage": "Apply Damage",
   "battleEnemyCard.applyDamageHint": "Enter damage and click the button.",

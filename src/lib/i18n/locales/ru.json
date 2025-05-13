@@ -69,6 +69,7 @@
   "battlePage.noEnemies.title": "Бойцов Нет",
   "battlePage.noEnemies.message": "Арена пуста. Вернитесь в кузницу, чтобы подготовить столкновение.",
   "battlePage.buttons.returnToForge": "Обратно в Кузницу",
+  "battlePage.buttons.finishBattle": "Завершить Битву",
   
   "battleEnemyCard.applyDamage": "Нанести Урон",
   "battleEnemyCard.applyDamageHint": "Введите урон и нажмите кнопку.",
