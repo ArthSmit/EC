@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Shield, Heart, Wind, Zap, Star, MinusCircle } from "lucide-react";
+import { Shield, Heart, Wind, Zap, Star, Sword } from "lucide-react";
 import { useAppTranslations } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
@@ -101,7 +101,7 @@ export default function BattleEnemyCard({ enemy, onDamageApplied }: BattleEnemyC
                   disabled={isDefeated || !damageInput}
                   aria-label={t('battleEnemyCard.applyDamage')}
                 >
-                  <MinusCircle className="h-5 w-5" />
+                  <Sword className="h-5 w-5" />
                 </Button>
               </div>
                <p className="text-xs text-muted-foreground text-center">{t('battleEnemyCard.applyDamageHint')}</p>
@@ -144,3 +144,4 @@ export default function BattleEnemyCard({ enemy, onDamageApplied }: BattleEnemyC
     </Card>
   );
 }
+
