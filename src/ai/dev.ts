@@ -1,1 +1,5 @@
-// Flows will be imported for their side effects in this file.
+import { config } from 'dotenv';
+config();
+
+import '@/ai/flows/assign-abilities-and-actions.ts';
+import '@/ai/flows/generate-enemy-stats.ts';
