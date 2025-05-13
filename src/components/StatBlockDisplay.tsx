@@ -5,6 +5,9 @@ import StatBlock from "./StatBlock";
 import type { Enemy } from "@/lib/types";
 import Image from "next/image";
 import { useAppTranslations } from "@/lib/i18n";
+import { Button } from "@/components/ui/button";
+import { Swords } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface StatBlockDisplayProps {
   enemies: Enemy[];
@@ -13,6 +16,7 @@ interface StatBlockDisplayProps {
 
 export default function StatBlockDisplay({ enemies, encounterName }: StatBlockDisplayProps) {
   const { t } = useAppTranslations();
+  const router = useRouter();
 
   if (!enemies || enemies.length === 0) {
     return (
@@ -31,6 +35,18 @@ export default function StatBlockDisplay({ enemies, encounterName }: StatBlockDi
     );
   }
 
+  const handleStartBattle = () => {
+    if (enemies && enemies.length > 0) {
+      localStorage.setItem('battleEnemies', JSON.stringify(enemies));
+      if (encounterName) {
+        localStorage.setItem('battleEncounterName', encounterName);
+      } else {
+        localStorage.setItem('battleEncounterName', t('battlePage.defaultTitle'));
+      }
+      router.push('/battle');
+    }
+  };
+
   return (
     <section className="mt-12 w-full">
       {encounterName && <h2 className="text-3xl font-bold text-center mb-8 text-accent">{encounterName}</h2>}
@@ -39,6 +55,18 @@ export default function StatBlockDisplay({ enemies, encounterName }: StatBlockDi
           <StatBlock key={enemy.id} enemy={enemy} />
         ))}
       </div>
+      {enemies && enemies.length > 0 && (
+        <div className="mt-12 text-center">
+          <Button 
+            onClick={handleStartBattle} 
+            size="lg" 
+            className="bg-accent hover:bg-accent/90 text-accent-foreground text-xl py-4 px-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-150"
+          >
+            <Swords className="mr-2 h-6 w-6" />
+            {t('statBlockDisplay.buttons.startBattle')}
+          </Button>
+        </div>
+      )}
     </section>
   );
 }

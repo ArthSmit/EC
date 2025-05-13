@@ -60,7 +60,20 @@
   
   "statBlockDisplay.empty.message": "Враги еще не созданы.",
   "statBlockDisplay.empty.prompt": "Заполните форму выше и создайте свое столкновение!",
+  "statBlockDisplay.buttons.startBattle": "Начать Битву!",
 
-  "randomEncounter.title": "Внезапно появляется Дикий {enemyName}!"
+  "randomEncounter.title": "Внезапно появляется Дикий {enemyName}!",
+
+  "battlePage.title": "Арена Битвы",
+  "battlePage.defaultTitle": "Столкновение",
+  "battlePage.noEnemies.title": "Бойцов Нет",
+  "battlePage.noEnemies.message": "Арена пуста. Вернитесь в кузницу, чтобы подготовить столкновение.",
+  "battlePage.buttons.returnToForge": "Обратно в Кузницу",
+  
+  "battleEnemyCard.applyDamage": "Нанести Урон",
+  "battleEnemyCard.applyDamageHint": "Введите урон и нажмите кнопку.",
+  "battleEnemyCard.damageAmountPlaceholder": "Урон",
+  "battleEnemyCard.defeated": "ПОВЕРЖЕН",
+  "battleEnemyCard.toast.invalidDamage.title": "Неверный Урон",
+  "battleEnemyCard.toast.invalidDamage.description": "Пожалуйста, введите положительное число для урона."
 }
-

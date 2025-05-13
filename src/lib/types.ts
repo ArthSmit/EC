@@ -8,3 +8,7 @@ export interface Enemy {
   abilities: string[];
   specialActions: string[];
 }
+
+export interface BattleEnemy extends Enemy {
+  currentHp: number;
+}

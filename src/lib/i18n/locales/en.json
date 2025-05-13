@@ -60,7 +60,20 @@
 
   "statBlockDisplay.empty.message": "No enemies generated yet.",
   "statBlockDisplay.empty.prompt": "Fill the form above and forge your encounter!",
+  "statBlockDisplay.buttons.startBattle": "Start Battle!",
 
-  "randomEncounter.title": "A Wild {enemyName} Appears!"
+  "randomEncounter.title": "A Wild {enemyName} Appears!",
+
+  "battlePage.title": "Battle Arena",
+  "battlePage.defaultTitle": "Encounter",
+  "battlePage.noEnemies.title": "No Combatants Here",
+  "battlePage.noEnemies.message": "The arena is empty. Return to the forge to prepare an encounter.",
+  "battlePage.buttons.returnToForge": "Back to the Forge",
+
+  "battleEnemyCard.applyDamage": "Apply Damage",
+  "battleEnemyCard.applyDamageHint": "Enter damage and click the button.",
+  "battleEnemyCard.damageAmountPlaceholder": "Damage",
+  "battleEnemyCard.defeated": "DEFEATED",
+  "battleEnemyCard.toast.invalidDamage.title": "Invalid Damage",
+  "battleEnemyCard.toast.invalidDamage.description": "Please enter a positive number for damage."
 }
-
