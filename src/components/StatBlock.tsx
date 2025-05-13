@@ -56,17 +56,17 @@ ${enemy.specialActions.map(action => `- ${action}`).join('\n')}
         <div className="grid grid-cols-3 gap-2 text-center pb-3">
           <div className="flex flex-col items-center p-2 rounded-md bg-background/50">
             <Shield className="h-5 w-5 mb-1 text-primary" />
-            <p className="font-semibold text-lg text-primary-foreground">{enemy.armorClass}</p>
+            <p className="font-semibold text-lg text-card-foreground">{enemy.armorClass}</p>
             <p className="text-xs text-muted-foreground">{t('statBlock.armorClass')}</p>
           </div>
           <div className="flex flex-col items-center p-2 rounded-md bg-background/50">
             <Heart className="h-5 w-5 mb-1 text-primary" />
-            <p className="font-semibold text-lg text-primary-foreground">{enemy.hitPoints}</p>
+            <p className="font-semibold text-lg text-card-foreground">{enemy.hitPoints}</p>
             <p className="text-xs text-muted-foreground">{t('statBlock.hitPoints')}</p>
           </div>
           <div className="flex flex-col items-center p-2 rounded-md bg-background/50">
             <Wind className="h-5 w-5 mb-1 text-primary" />
-            <p className="font-semibold text-lg text-primary-foreground">{enemy.speed} ft.</p>
+            <p className="font-semibold text-lg text-card-foreground">{enemy.speed} ft.</p>
             <p className="text-xs text-muted-foreground">{t('statBlock.speed')}</p>
           </div>
         </div>
@@ -117,3 +117,4 @@ ${enemy.specialActions.map(action => `- ${action}`).join('\n')}
     </Card>
   );
 }
+

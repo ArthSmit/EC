@@ -13,10 +13,11 @@ export default function Header() {
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Swords className="h-10 w-10 text-accent" />
-          <h1 className="text-4xl font-bold font-serif text-primary-foreground">{t('header.title')}</h1>
+          <h1 className="text-4xl font-bold font-serif text-card-foreground">{t('header.title')}</h1>
         </div>
         <LanguageSwitcher />
       </div>
     </header>
   );
 }
+
