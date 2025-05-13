@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Wand2, Loader2, HelpCircle } from "lucide-react";
+import { Wand2, Loader2, HelpCircle, ChevronsUpDown, Check } from "lucide-react";
 import type { Enemy } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -33,10 +33,32 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useAppTranslations } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+const PREDEFINED_ENEMY_TYPES_FOR_FORM = [
+  "Goblin", "Orc", "Skeleton", "Zombie", "Kobold", 
+  "Bandit", "Cultist", "Guard", "Acolyte",
+  "Wolf", "Giant Spider", "Ogre", 
+  "Dragon (Young Red)", "Knight", "Veteran"
+].sort();
+
 
 const getFormSchema = (t: (key: string, params?: any) => string) => z.object({
   enemyType: z.string()
-    .min(2, { message: t('enemyInputForm.enemyType.errorMin', { min: 2 }) })
+    .min(1, { message: t('enemyInputForm.enemyType.errorMin', { min: 1 }) }) 
     .max(50, { message: t('enemyInputForm.enemyType.errorMax', { max: 50 }) }),
   numberOfCreatures: z.coerce.number()
     .min(1, { message: t('enemyInputForm.numberOfCreatures.errorMin', { min: 1 }) })
@@ -47,14 +69,15 @@ const getFormSchema = (t: (key: string, params?: any) => string) => z.object({
 });
 
 type EnemyInputFormProps = {
-  onEnemiesGenerated: (enemies: Enemy[], encounterName: string) => void;
+  onEnemiesGenerated: (enemies: Enemy[], encounterName: string, isRandom?: boolean) => void;
   onLoadingStateChange: (isLoading: boolean) => void;
 };
 
 export default function EnemyInputForm({ onEnemiesGenerated, onLoadingStateChange }: EnemyInputFormProps) {
-  const { t } = useAppTranslations();
+  const { t, language } = useAppTranslations();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isRandomSubmitting, setIsRandomSubmitting] = React.useState(false);
+  const [enemyTypePopoverOpen, setEnemyTypePopoverOpen] = React.useState(false);
   const { toast } = useToast();
 
   const formSchema = React.useMemo(() => getFormSchema(t), [t]);
@@ -73,12 +96,12 @@ export default function EnemyInputForm({ onEnemiesGenerated, onLoadingStateChang
     onLoadingStateChange(true);
     try {
       const { handleGenerateEncounter } = await import("@/app/actions");
-      const result = await handleGenerateEncounter(values);
-      const encounterDisplayName = values.numberOfCreatures > 1 ? `${values.enemyType} x${values.numberOfCreatures}` : values.enemyType;
-      onEnemiesGenerated(result, encounterDisplayName);
+      const result = await handleGenerateEncounter({ ...values, language });
+      const encounterDisplayName = values.numberOfCreatures > 1 ? `${result.encounterBaseName} x${values.numberOfCreatures}` : result.encounterBaseName;
+      onEnemiesGenerated(result.enemies, encounterDisplayName, false);
       toast({ 
         title: t('enemyInputForm.toast.forgeSuccess.title'), 
-        description: t('enemyInputForm.toast.forgeSuccess.description', { enemyType: values.enemyType }) 
+        description: t('enemyInputForm.toast.forgeSuccess.description', { enemyType: result.encounterBaseName }) 
       });
     } catch (error) {
       console.error("Failed to generate encounter:", error);
@@ -87,7 +110,7 @@ export default function EnemyInputForm({ onEnemiesGenerated, onLoadingStateChang
         title: t('enemyInputForm.toast.forgeError.title'), 
         description: t('enemyInputForm.toast.forgeError.description')
       });
-      onEnemiesGenerated([], ""); 
+      onEnemiesGenerated([], "", false); 
     } finally {
       setIsSubmitting(false);
       onLoadingStateChange(false);
@@ -99,11 +122,11 @@ export default function EnemyInputForm({ onEnemiesGenerated, onLoadingStateChang
     onLoadingStateChange(true);
     try {
       const { handleRandomEnemy } = await import("@/app/actions");
-      const result = await handleRandomEnemy();
-      onEnemiesGenerated(result.enemies, result.encounterName);
+      const result = await handleRandomEnemy({ language });
+      onEnemiesGenerated(result.enemies, result.localizedBaseName, true);
       toast({ 
         title: t('enemyInputForm.toast.randomSuccess.title'), 
-        description: t('enemyInputForm.toast.randomSuccess.description', { encounterName: result.encounterName })
+        description: t('enemyInputForm.toast.randomSuccess.description', { encounterName: result.localizedBaseName })
       });
     } catch (error) {
         console.error("Failed to generate random enemy:", error);
@@ -112,7 +135,7 @@ export default function EnemyInputForm({ onEnemiesGenerated, onLoadingStateChang
           title: t('enemyInputForm.toast.randomError.title'), 
           description: t('enemyInputForm.toast.randomError.description')
         });
-        onEnemiesGenerated([], ""); 
+        onEnemiesGenerated([], "", true); 
     } finally {
         setIsRandomSubmitting(false);
         onLoadingStateChange(false);
@@ -129,11 +152,63 @@ export default function EnemyInputForm({ onEnemiesGenerated, onLoadingStateChang
               control={form.control}
               name="enemyType"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col">
                   <FormLabel className="text-base">{t('enemyInputForm.enemyType.label')}</FormLabel>
-                  <FormControl>
-                    <Input placeholder={t('enemyInputForm.enemyType.placeholder')} {...field} className="text-base py-2 px-3"/>
-                  </FormControl>
+                  <Popover open={enemyTypePopoverOpen} onOpenChange={setEnemyTypePopoverOpen}>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={enemyTypePopoverOpen}
+                          className={cn(
+                            "w-full justify-between text-left text-base py-2 px-3 h-auto font-normal", 
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? PREDEFINED_ENEMY_TYPES_FOR_FORM.find(
+                                (enemy) => enemy.toLowerCase() === field.value.toLowerCase()
+                              ) || field.value
+                            : t('enemyInputForm.enemyType.comboboxPlaceholder')}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                      <Command>
+                        <CommandInput 
+                          placeholder={t('enemyInputForm.enemyType.comboboxSearchPlaceholder')}
+                          value={field.value || ""} 
+                          onValueChange={(search) => { 
+                             form.setValue("enemyType", search, { shouldValidate: true });
+                          }}
+                        />
+                        <CommandEmpty>{t('enemyInputForm.enemyType.comboboxEmpty')}</CommandEmpty>
+                        <CommandList>
+                          {PREDEFINED_ENEMY_TYPES_FOR_FORM.map((enemy) => (
+                            <CommandItem
+                              value={enemy}
+                              key={enemy}
+                              onSelect={(currentValue) => {
+                                const valueToSet = currentValue.toLowerCase() === (field.value || "").toLowerCase() ? "" : currentValue;
+                                form.setValue("enemyType", valueToSet, { shouldValidate: true });
+                                setEnemyTypePopoverOpen(false);
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  enemy.toLowerCase() === (field.value || "").toLowerCase() ? "opacity-100" : "opacity-0"
+                                )}
+                              />
+                              {enemy}
+                            </CommandItem>
+                          ))}
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   <FormDescription>
                     {t('enemyInputForm.enemyType.description')}
                   </FormDescription>

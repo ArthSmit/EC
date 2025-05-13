@@ -7,14 +7,17 @@
 
   "homePage.loader.text": "Загрузка Кузницы...",
   "homePage.loading.title": "Создание вашего столкновения...",
-  "homePage.loading.subtitle": "Туманы творения клубится!",
+  "homePage.loading.subtitle": "Туманы творения клубятся!",
 
   "enemyInputForm.title": "Создайте Ваше Столкновение",
   "enemyInputForm.enemyType.label": "Тип Врага",
   "enemyInputForm.enemyType.placeholder": "например, Гоблин, Дракон, Огр",
-  "enemyInputForm.enemyType.description": "Какого врага вы призываете?",
-  "enemyInputForm.enemyType.errorMin": "Тип врага должен содержать не менее {min} символов.",
+  "enemyInputForm.enemyType.description": "Какого врага вы призываете? Выберите из списка или введите свой вариант.",
+  "enemyInputForm.enemyType.errorMin": "Тип врага должен содержать не менее {min} символа.",
   "enemyInputForm.enemyType.errorMax": "Тип врага должен содержать не более {max} символов.",
+  "enemyInputForm.enemyType.comboboxPlaceholder": "Выберите или введите врага...",
+  "enemyInputForm.enemyType.comboboxSearchPlaceholder": "Искать или ввести тип врага...",
+  "enemyInputForm.enemyType.comboboxEmpty": "Тип врага не найден. Введите свой.",
   "enemyInputForm.numberOfCreatures.label": "Количество Существ",
   "enemyInputForm.numberOfCreatures.description": "Сколько бойцов? (1-20)",
   "enemyInputForm.numberOfCreatures.errorMin": "Должно быть не менее {min} существа.",
@@ -56,5 +59,7 @@
   "statBlock.clipboard.specialActionsHeader": "Особые Действия:",
   
   "statBlockDisplay.empty.message": "Враги еще не созданы.",
-  "statBlockDisplay.empty.prompt": "Заполните форму выше и создайте свое столкновение!"
+  "statBlockDisplay.empty.prompt": "Заполните форму выше и создайте свое столкновение!",
+
+  "randomEncounter.title": "Внезапно появляется Дикий {enemyName}!"
 }

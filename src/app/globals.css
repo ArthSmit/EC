@@ -5,49 +5,49 @@
 
 @layer base {
   :root {
-    --background: 0 0% 12%; /* Dark Gray e.g. #1F1F1F */
-    --foreground: 60 56% 91%; /* Parchment Tan e.g. #F5EFDB */
+    --background: 56 58% 91%; /* Parchment Tan (e.g., #F5F5DC) */
+    --foreground: 0 0% 20%; /* Dark Gray (e.g., #333333) */
 
-    --card: 60 30% 85%; /* Darker Parchment e.g. #EAE4D0 */
-    --card-foreground: 0 0% 15%; /* Dark Gray on Cards e.g. #262626 */
+    --card: 56 45% 88%; /* Slightly darker/muted Parchment (e.g., #EDEBCD) */
+    --card-foreground: 0 0% 15%; /* Darker Gray for card text (e.g., #262626) */
 
-    --popover: 60 30% 80%; /* Similar to Card */
+    --popover: 56 45% 85%; /* Similar to Card (e.g., #EAE4D0) */
     --popover-foreground: 0 0% 15%; /* Dark Gray on Popover */
 
-    --primary: 0 0% 20%; /* Dark Gray #333333 */
-    --primary-foreground: 60 56% 91%; /* Parchment Tan on Primary */
+    --primary: 0 0% 13%; /* Very Dark Gray / Near Black for buttons (e.g., #212121) */
+    --primary-foreground: 0 0% 98%; /* White/Light text on Primary (e.g., #FAFAFA) */
 
-    --secondary: 0 0% 25%; /* Slightly Lighter Dark Gray e.g. #404040 */
-    --secondary-foreground: 60 56% 91%; /* Parchment Tan on Secondary */
+    --secondary: 0 0% 30%; /* Medium-Dark Gray (e.g., #4D4D4D) */
+    --secondary-foreground: 0 0% 95%; /* Light text on Secondary (e.g., #F2F2F2) */
 
-    --muted: 0 0% 25%; /* Same as Secondary Background */
-    --muted-foreground: 60 56% 75%; /* Darker Parchment for muted text e.g. #D4CBA9 */
+    --muted: 0 0% 85%; /* Light Gray for muted backgrounds (e.g., #D9D9D9) */
+    --muted-foreground: 0 0% 40%; /* Medium Gray for muted text (e.g., #666666) */
 
-    --accent: 0 100% 27%; /* Deep Red #8B0000 */
-    --accent-foreground: 0 0% 98%; /* White/Light text on Accent e.g. #FAFAFA */
+    --accent: 0 100% 27%; /* Deep Red (#8B0000) */
+    --accent-foreground: 0 0% 98%; /* White/Light text on Accent (#FAFAFA) */
 
     --destructive: 0 70% 40%; /* A less intense red for destructive actions */
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 30%; /* Medium Gray for borders e.g. #4D4D4D */
-    --input: 0 0% 30%; /* Medium Gray for input backgrounds */
-    --ring: 0 100% 35%; /* Brighter Red for focus rings e.g. #B30000 */
+    --border: 0 0% 75%; /* Medium-Light Gray for borders (e.g., #BFBFBF) */
+    --input: 0 0% 95%; /* Very Light Gray / Off-white for input backgrounds (e.g., #F2F2F2), text will be --foreground */
+    --ring: 0 100% 35%; /* Brighter Red for focus rings (e.g., #B30000) */
 
     --radius: 0.5rem;
 
-    /* Sidebar variables - kept as is, can be themed later if sidebar is used */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar variables - Light theme adjusted */
+    --sidebar-background: 56 60% 94%; /* Lighter Parchment */
+    --sidebar-foreground: 0 0% 20%;   /* Dark text */
+    --sidebar-primary: 0 100% 27%;    /* Accent red */
+    --sidebar-primary-foreground: 0 0% 98%; /* Light text on accent */
+    --sidebar-accent: 56 40% 85%;     /* Muted Parchment for hover */
+    --sidebar-accent-foreground: 0 0% 15%; /* Dark text on hover */
+    --sidebar-border: 0 0% 80%;       /* Light gray border */
+    --sidebar-ring: 0 100% 35%;       /* Red ring */
   }
 
   .dark {
-    /* Keeping dark theme variables as defaults for now, can be adjusted if dark mode toggle is added */
+    /* Original dark theme values */
     --background: 0 0% 12%;
     --foreground: 60 56% 91%;
     --card: 60 30% 85%;
@@ -68,7 +68,7 @@
     --input: 0 0% 30%;
     --ring: 0 100% 35%;
 
-    /* Dark theme sidebar - can be adjusted */
+    /* Dark theme sidebar */
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -86,6 +86,5 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Default font-family will be set via Tailwind config and layout.tsx font variable */
   }
 }

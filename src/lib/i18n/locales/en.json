@@ -12,9 +12,12 @@
   "enemyInputForm.title": "Forge Your Encounter",
   "enemyInputForm.enemyType.label": "Enemy Type",
   "enemyInputForm.enemyType.placeholder": "e.g., Goblin, Dragon, Ogre",
-  "enemyInputForm.enemyType.description": "What kind of foe are you summoning?",
-  "enemyInputForm.enemyType.errorMin": "Enemy type must be at least {min} characters.",
+  "enemyInputForm.enemyType.description": "What kind of foe are you summoning? Select from the list or type your own.",
+  "enemyInputForm.enemyType.errorMin": "Enemy type must be at least {min} character.",
   "enemyInputForm.enemyType.errorMax": "Enemy type must be {max} characters or less.",
+  "enemyInputForm.enemyType.comboboxPlaceholder": "Select or type an enemy...",
+  "enemyInputForm.enemyType.comboboxSearchPlaceholder": "Search or type enemy...",
+  "enemyInputForm.enemyType.comboboxEmpty": "No enemy type found. Type to add custom.",
   "enemyInputForm.numberOfCreatures.label": "Number of Creatures",
   "enemyInputForm.numberOfCreatures.description": "How many combatants? (1-20)",
   "enemyInputForm.numberOfCreatures.errorMin": "Must be at least {min} creature.",
@@ -56,5 +59,7 @@
   "statBlock.clipboard.specialActionsHeader": "Special Actions:",
 
   "statBlockDisplay.empty.message": "No enemies generated yet.",
-  "statBlockDisplay.empty.prompt": "Fill the form above and forge your encounter!"
+  "statBlockDisplay.empty.prompt": "Fill the form above and forge your encounter!",
+
+  "randomEncounter.title": "A Wild {enemyName} Appears!"
 }

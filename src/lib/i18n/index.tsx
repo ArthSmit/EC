@@ -1,11 +1,12 @@
+
 "use client";
 
 import type React from 'react';
 import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import enTranslations from './locales/en.json';
 import ruTranslations from './locales/ru.json';
+import type { Language } from './types'; // Import Language type
 
-type Language = 'en' | 'ru';
 type Translations = Record<string, string>;
 type TranslationData = Record<Language, Translations>;
 
@@ -46,9 +47,13 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const t = useCallback((key: string, params?: Record<string, string | number>): string => {
     if (!isMounted) return key; 
     
-    const currentTranslations = translationsData[language] || translationsData.en;
-    let translation = currentTranslations[key] || key;
-
+    let currentTranslations = translationsData[language] || translationsData.en;
+    // Fallback for missing keys in the current language
+    let translation = currentTranslations[key];
+    if (translation === undefined) {
+      translation = translationsData.en[key] || key; // Fallback to English or key itself
+    }
+    
     if (params) {
       Object.entries(params).forEach(([paramKey, value]) => {
         translation = translation.replace(new RegExp(`{${paramKey}}`, 'g'), String(value));

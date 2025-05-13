@@ -21,9 +21,13 @@ export default function HomePage() {
     setIsMounted(true);
   }, []);
 
-  const handleGeneratedEnemies = (generatedEnemies: Enemy[], name: string) => {
+  const handleGeneratedEnemies = (generatedEnemies: Enemy[], name: string, isRandom: boolean = false) => {
     setEnemies(generatedEnemies);
-    setEncounterName(name);
+    if (isRandom && generatedEnemies.length === 1 && name) {
+      setEncounterName(t('randomEncounter.title', { enemyName: name }));
+    } else {
+      setEncounterName(name);
+    }
   };
   
   const handleLoading = (loading: boolean) => {

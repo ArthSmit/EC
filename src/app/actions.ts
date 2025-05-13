@@ -2,75 +2,87 @@
 "use server";
 
 import { generateEnemyStats, type GenerateEnemyStatsInput } from "@/ai/flows/generate-enemy-stats";
-import { assignAbilitiesAndActions, type AssignAbilitiesAndActionsInput } from "@/ai/flows/assign-abilities-and-actions";
+import { assignAbilitiesAndActions, type AssignAbilitiesAndActionsInput, type AssignAbilitiesAndActionsOutput } from "@/ai/flows/assign-abilities-and-actions";
 import type { Enemy } from "@/lib/types";
 import { z } from "zod";
+import type { Language } from '@/lib/i18n/types';
+
 
 const generateEncounterSchema = z.object({
   enemyType: z.string().min(1, "Enemy type is required."),
   numberOfCreatures: z.coerce.number().min(1).max(20),
   difficulty: z.enum(["easy", "medium", "hard", "random"]),
+  language: z.string().min(2).max(5) as z.ZodType<Language>,
 });
 
 export async function handleGenerateEncounter(
   input: z.infer<typeof generateEncounterSchema>
-): Promise<Enemy[]> {
+): Promise<{enemies: Enemy[], encounterBaseName: string}> {
   const validatedInput = generateEncounterSchema.parse(input);
-  const { enemyType, numberOfCreatures, difficulty } = validatedInput;
+  const { enemyType, numberOfCreatures, difficulty, language } = validatedInput;
 
   const enemies: Enemy[] = [];
 
-  // Generate base stats and abilities once for the given type and difficulty
-  // The AI prompts are designed to consider numberOfCreatures for scaling if applicable.
   const baseStats = await generateEnemyStats({ enemyType, numberOfCreatures, difficulty });
-  const baseAbilities = await assignAbilitiesAndActions({ enemyType, difficulty });
+  const baseAbilitiesAndName: AssignAbilitiesAndActionsOutput = await assignAbilitiesAndActions({ 
+    enemyType, 
+    difficulty, 
+    targetLanguage: language 
+  });
+
+  const enemyBaseName = baseAbilitiesAndName.localizedName;
 
   for (let i = 0; i < numberOfCreatures; i++) {
     enemies.push({
-      id: `${enemyType}-${difficulty}-${Date.now()}-${i}`, // Unique ID for React keys
-      name: numberOfCreatures > 1 ? `${enemyType} ${i + 1}` : enemyType,
+      id: `${enemyBaseName}-${difficulty}-${Date.now()}-${i}`, 
+      name: numberOfCreatures > 1 ? `${enemyBaseName} ${i + 1}` : enemyBaseName,
       armorClass: baseStats.armorClass,
-      hitPoints: baseStats.hitPoints, // HP can be further randomized per creature if desired
+      hitPoints: baseStats.hitPoints, 
       speed: baseStats.speed,
-      abilities: baseAbilities.abilities,
-      specialActions: baseAbilities.specialActions,
+      abilities: baseAbilitiesAndName.abilities,
+      specialActions: baseAbilitiesAndName.specialActions,
     });
   }
 
-  return enemies;
+  return { enemies, encounterBaseName: enemyBaseName };
 }
 
-// For random enemy generation
-const PREDEFINED_ENEMY_TYPES = ["Goblin Scout", "Orc Warrior", "Undead Skeleton", "Giant Spider", "Cult Fanatic", "Dire Wolf", "Bandit Captain"];
+const randomEnemySchema = z.object({
+  language: z.string().min(2).max(5) as z.ZodType<Language>,
+});
+
+const PREDEFINED_ENEMY_TYPES_FOR_RANDOM = ["Goblin Scout", "Orc Warrior", "Undead Skeleton", "Giant Spider", "Cult Fanatic", "Dire Wolf", "Bandit Captain"];
 const PREDEFINED_DIFFICULTIES: Array<"easy" | "medium" | "hard"> = ["easy", "medium", "hard"];
 
-export async function handleRandomEnemy(): Promise<{ enemies: Enemy[], encounterName: string }> {
-  const randomEnemyType = PREDEFINED_ENEMY_TYPES[Math.floor(Math.random() * PREDEFINED_ENEMY_TYPES.length)];
-  // For a single random enemy, difficulty can also be random.
+export async function handleRandomEnemy(input: z.infer<typeof randomEnemySchema>): Promise<{ enemies: Enemy[], localizedBaseName: string }> {
+  const { language } = randomEnemySchema.parse(input);
+
+  const randomEnemyTypeKey = PREDEFINED_ENEMY_TYPES_FOR_RANDOM[Math.floor(Math.random() * PREDEFINED_ENEMY_TYPES_FOR_RANDOM.length)];
   const randomDifficulty = PREDEFINED_DIFFICULTIES[Math.floor(Math.random() * PREDEFINED_DIFFICULTIES.length)];
   
   const statsInput: GenerateEnemyStatsInput = { 
-    enemyType: randomEnemyType, 
-    numberOfCreatures: 1, // Always 1 for a single random enemy
+    enemyType: randomEnemyTypeKey, 
+    numberOfCreatures: 1, 
     difficulty: randomDifficulty 
   };
   const abilitiesInput: AssignAbilitiesAndActionsInput = { 
-    enemyType: randomEnemyType, 
-    difficulty: randomDifficulty 
+    enemyType: randomEnemyTypeKey, 
+    difficulty: randomDifficulty,
+    targetLanguage: language,
   };
 
   const stats = await generateEnemyStats(statsInput);
-  const abilities = await assignAbilitiesAndActions(abilitiesInput);
+  const abilitiesAndName = await assignAbilitiesAndActions(abilitiesInput);
 
   const enemy: Enemy = {
-    id: `${randomEnemyType}-${randomDifficulty}-${Date.now()}-0`,
-    name: randomEnemyType,
+    id: `${abilitiesAndName.localizedName}-${randomDifficulty}-${Date.now()}-0`,
+    name: abilitiesAndName.localizedName,
     armorClass: stats.armorClass,
     hitPoints: stats.hitPoints,
     speed: stats.speed,
-    abilities: abilities.abilities,
-    specialActions: abilities.specialActions,
+    abilities: abilitiesAndName.abilities,
+    specialActions: abilitiesAndName.specialActions,
   };
 
-  return { enemies: [enemy], encounterName: `A Wild ${randomEnemyType} Appears!` };
+  return { enemies: [enemy], localizedBaseName: abilitiesAndName.localizedName };
 }
